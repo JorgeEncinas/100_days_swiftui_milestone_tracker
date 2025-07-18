@@ -16,7 +16,9 @@ class ActivityViewModel : ObservableObject {
             if increment {
                 activity.amountDone += activity.baseIncrement
             } else {
-                activity.amountDone -= activity.baseIncrement
+                if (activity.amountDone > 0) {
+                    activity.amountDone -= activity.baseIncrement
+                }
             }
             activities[id] = activity
             saveActivities()
