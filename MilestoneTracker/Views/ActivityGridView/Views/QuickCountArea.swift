@@ -31,7 +31,8 @@ struct QuickCountArea : View {
                 lightText: lightText
             )
         }
-        .frame(maxHeight: .infinity)
+        .frame( maxWidth: .infinity, maxHeight: .infinity)
+        //.overlay(Rectangle())
     }
 }
 

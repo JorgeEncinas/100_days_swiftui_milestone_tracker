@@ -12,10 +12,10 @@ struct ActivityGridView : View {
     static var mockActivity : Activity {
         let activityColor : ActivityColor = ActivityColor(
             color: Color(red: 0.5, green: 0.3, blue: 0.6),
-            lightText: false
+            lightText: true
         )
         return Activity(
-            name: "100 Days of SwiftUI and macOS practicce",
+            name: "100 Days of SwiftUI",
             activityColor: activityColor,
             description: "text",
             amountDone: 104,
@@ -35,6 +35,7 @@ struct ActivityGridView : View {
                         .font(.system(size: 20).bold())
                 }
                 .frame(maxHeight: .infinity)
+                //.background(.red)
                 CentralCountView(
                     amountDone: activity.amountDone,
                     unit: activity.unit,
@@ -49,7 +50,7 @@ struct ActivityGridView : View {
             }
             .frame(height: 200)
             .containerRelativeFrame(.horizontal) { width, axes in
-                width * 0.5
+                width * 0.47
             }
             .background(activity.activityColor.color)
             .cornerRadius(10)

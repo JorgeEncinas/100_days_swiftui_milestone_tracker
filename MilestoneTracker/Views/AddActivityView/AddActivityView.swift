@@ -8,9 +8,9 @@ import SwiftUI
 
 struct AddActivityView : View {
     var id : UUID?
+    @Environment(\.dismiss) var dismiss
+    @Binding var activities : [Activity]
     @State private var name : String = ""
-    let unitOptions = ["mins", "hrs", "times", "days"]
-    
     @State private var chosenColor : Color = Color.purple
     @State private var description : String = ""
     @State private var amountDone : Int = 0
@@ -39,41 +39,11 @@ struct AddActivityView : View {
                 .ignoresSafeArea()
             
             VStack {
-                Form {
-                    Section("Information") {
-                        TextField("Name", text: $name)
-                        VStack(alignment: .leading) {
-                            Text("Description")
-                                .padding(.top, 8)
-                            ZStack(alignment: .topLeading) {
-                                
-                                TextEditor(text: $description)
-                                //Placeholder text to indicate
-                                if(description.isEmpty) {
-                                    Text("What is this about?")
-                                        .foregroundColor(.gray)
-                                        .padding(.leading, 5)
-                                        .padding(.top, 8)
-                                }
-                            }
-                        }
-                        HStack {
-                            Text("Amount to start at")
-                            TextField("Amount done so far", value: $amountDone, format: .number)
-                        }
-                        Picker("Unit", selection: $unit) {
-                            ForEach(unitOptions, id:\.self) { unitOption in
-                                Text(unitOption)
-                            }
-                        }
-                    }
-                    Section("Display") {
-                        ColorPicker("Choose a color", selection: $chosenColor)
-                            .padding()
-                        Toggle("LightText", isOn: $lightText)
-                            .padding()
-                    }
-                }
+                ActivityFormView(
+                    name: $name, description: $description,
+                    unit: $unit, amountDone: $amountDone,
+                    chosenColor: $chosenColor, lightText: $lightText
+                )
                 VStack {
                     Text("Preview")
                         .font(.system(size: 20).bold())
@@ -86,16 +56,38 @@ struct AddActivityView : View {
             }
         }.toolbar {
             Button("Save") {
-                // Save code here
+                let activityColor = ActivityColor(
+                    color: chosenColor,
+                    lightText: lightText
+                )
+                var activity = Activity(
+                    name: name,
+                    activityColor: activityColor,
+                    description: description,
+                    amountDone: amountDone,
+                    baseIncrement: baseIncrement,
+                    unit: unit
+                )
+                if let unwrappedId = id { //Existing activity?
+                    activity.id = unwrappedId
+                    activities = activities.map { $0.id == unwrappedId ?
+                        activity : $0
+                    }
+                } else {
+                    activities.append(activity)
+                }
+                dismiss()
             }
         }
     }
 }
 
 #Preview {
+    @Previewable @State var activities = [Activity]()
     let nilid : UUID? = nil
+    
     NavigationStack {
-        AddActivityView(id: nilid)
+        AddActivityView(id: nilid, activities: $activities)
     }
 }
 

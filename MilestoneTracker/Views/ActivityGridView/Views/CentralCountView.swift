@@ -22,6 +22,7 @@ struct CentralCountView : View {
                 .font(.system(size: 16).bold())
                 .offset(x: -3)
         }
+        //.overlay(Rectangle())
     }
 }
 
