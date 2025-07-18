@@ -7,7 +7,8 @@
 import SwiftUI
 
 struct ActivityGridView : View {
-    let activity : Activity
+    var activity : Activity
+    let isPreview : Bool
     
     static var mockActivity : Activity {
         let activityColor : ActivityColor = ActivityColor(
@@ -25,7 +26,7 @@ struct ActivityGridView : View {
     }
     
     var body : some View {
-        NavigationLink(value: activity.id) {
+        NavigationLink(value: activity) {
             VStack {
                 VStack() {
                     Text(activity.name)
@@ -43,9 +44,11 @@ struct ActivityGridView : View {
                 )
                 
                 QuickCountArea(
-                    baseIncrement: 15,
-                    unit: "times",
-                    lightText: activity.activityColor.lightText
+                    id: activity.id,
+                    baseIncrement: activity.baseIncrement,
+                    unit: activity.unit,
+                    lightText: activity.activityColor.lightText,
+                    isPreview: isPreview
                 )
             }
             .frame(height: 200)
@@ -59,5 +62,5 @@ struct ActivityGridView : View {
 }
 
 #Preview {
-    ActivityGridView(activity: ActivityGridView.mockActivity)
+    ActivityGridView(activity: ActivityGridView.mockActivity, isPreview: true)
 }

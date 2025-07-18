@@ -7,15 +7,19 @@
 import SwiftUI
 
 struct QuickCountArea : View {
+    let id : UUID
     let baseIncrement : Int
     let unit : String
     let lightText : Bool
+    let isPreview : Bool
     
     var body : some View {
         HStack(alignment: .center) {
             CounterButtonView(
-                buttonAppleName: "minus.circle",
-                lightText: lightText
+                id: id,
+                lightText: lightText,
+                increment: false,
+                preview: isPreview
             )
             VStack {
                 Text("\(baseIncrement)")
@@ -27,8 +31,10 @@ struct QuickCountArea : View {
             }
             
             CounterButtonView(
-                buttonAppleName: "plus.circle",
-                lightText: lightText
+                id: id,
+                lightText: lightText,
+                increment: true,
+                preview: isPreview
             )
         }
         .frame( maxWidth: .infinity, maxHeight: .infinity)
@@ -37,6 +43,12 @@ struct QuickCountArea : View {
 }
 
 #Preview {
-    QuickCountArea(baseIncrement: 15, unit: "mins", lightText: false)
+    QuickCountArea(
+        id: UUID(),
+        baseIncrement: 15,
+        unit: "mins",
+        lightText: false,
+        isPreview: true
+    )
         .preferredColorScheme(.light)
 }

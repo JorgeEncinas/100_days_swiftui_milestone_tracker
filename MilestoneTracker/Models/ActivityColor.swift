@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct ActivityColor : Codable {
+struct ActivityColor : Codable, Hashable {
     var red : Double
     var blue : Double
     var green : Double

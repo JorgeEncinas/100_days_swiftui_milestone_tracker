@@ -8,9 +8,10 @@ import SwiftUI
 
 struct ActivityListView : View {
     let activity : Activity
+    let isPreview : Bool
     
     var body : some View {
-        NavigationLink(value: activity.id){
+        NavigationLink(value: activity){
             HStack {
                 VStack() {
                     Text(activity.name)
@@ -31,9 +32,11 @@ struct ActivityListView : View {
                         lightText: activity.activityColor.lightText
                     )
                     QuickCountArea(
+                        id: activity.id,
                         baseIncrement: 15,
                         unit: "times",
-                        lightText: activity.activityColor.lightText
+                        lightText: activity.activityColor.lightText,
+                        isPreview: isPreview
                     )
                     Spacer()
                         .padding(.top)
@@ -48,6 +51,6 @@ struct ActivityListView : View {
 }
 
 #Preview {
-    ActivityListView(activity: ActivityGridView.mockActivity)
+    ActivityListView(activity: ActivityGridView.mockActivity, isPreview: true)
 }
 

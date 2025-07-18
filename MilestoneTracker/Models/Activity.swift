@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct Activity : Codable, Identifiable { //Codable to save it in UserDefaults, Hashable to save it in NavigationPath maybe?
+struct Activity : Codable, Identifiable, Hashable { //Codable to save it in UserDefaults, Hashable to save it in NavigationPath maybe?
     var id : UUID // Or perhaps use only the activity ID as a way to set the navPath?
     var name : String
     var activityColor : ActivityColor
@@ -15,6 +15,14 @@ struct Activity : Codable, Identifiable { //Codable to save it in UserDefaults, 
     
     var baseIncrement : Int
     var unit : String
+    
+    mutating func incrementFunction(increment: Bool) -> Void {
+        if increment {
+            self.amountDone += self.baseIncrement
+        } else {
+            self.amountDone -= self.baseIncrement
+        }
+    }
     
     init(name : String, activityColor: ActivityColor, description : String, amountDone: Int, baseIncrement : Int, unit: String) {
         self.id = UUID()

@@ -8,8 +8,8 @@ import SwiftUI
 
 struct AddActivityView : View {
     var id : UUID?
+    let addOrEditActivity : AddOrEditActivityFunc
     @Environment(\.dismiss) var dismiss
-    @Binding var activities : [Activity]
     @State private var name : String = ""
     @State private var chosenColor : Color = Color.purple
     @State private var description : String = ""
@@ -17,6 +17,25 @@ struct AddActivityView : View {
     @State private var baseIncrement : Int = 1
     @State private var unit : String = "times"
     @State private var lightText : Bool = false
+    
+    init(activity : Activity, addOrEditActivity: @escaping AddOrEditActivityFunc) {
+        self.id = activity.id
+        self.name = activity.name
+        self.description = activity.description
+        self.chosenColor = activity.activityColor.color
+        self.description = activity.description
+        self.amountDone = activity.amountDone
+        self.baseIncrement = activity.baseIncrement
+        self.unit = activity.unit
+        self.lightText = activity.activityColor.lightText
+        
+        self.addOrEditActivity = addOrEditActivity
+    }
+    
+    init(addOrEditActivity: @escaping AddOrEditActivityFunc) {
+        self.id = UUID()
+        self.addOrEditActivity = addOrEditActivity
+    }
     
     var mockActivity : Activity {
         let activityColor = ActivityColor(
@@ -27,9 +46,9 @@ struct AddActivityView : View {
             name: name.isEmpty ? "Example" : name,
             activityColor: activityColor,
             description: description,
-            amountDone: 30,
-            baseIncrement : 2,
-            unit: "mins"
+            amountDone: amountDone,
+            baseIncrement : baseIncrement,
+            unit: unit
         )
     }
     
@@ -42,14 +61,16 @@ struct AddActivityView : View {
                 ActivityFormView(
                     name: $name, description: $description,
                     unit: $unit, amountDone: $amountDone,
-                    chosenColor: $chosenColor, lightText: $lightText
+                    chosenColor: $chosenColor, lightText: $lightText,
+                    baseIncrement: $baseIncrement
                 )
                 VStack {
                     Text("Preview")
                         .font(.system(size: 20).bold())
                     HStack(alignment: .center) {
                         ActivityGridView(
-                            activity: mockActivity
+                            activity: mockActivity,
+                            isPreview: true
                         )
                     }
                 }
@@ -60,7 +81,7 @@ struct AddActivityView : View {
                     color: chosenColor,
                     lightText: lightText
                 )
-                var activity = Activity(
+                let activity = Activity(
                     name: name,
                     activityColor: activityColor,
                     description: description,
@@ -68,14 +89,7 @@ struct AddActivityView : View {
                     baseIncrement: baseIncrement,
                     unit: unit
                 )
-                if let unwrappedId = id { //Existing activity?
-                    activity.id = unwrappedId
-                    activities = activities.map { $0.id == unwrappedId ?
-                        activity : $0
-                    }
-                } else {
-                    activities.append(activity)
-                }
+                addOrEditActivity(activity)
                 dismiss()
             }
         }
@@ -83,11 +97,13 @@ struct AddActivityView : View {
 }
 
 #Preview {
-    @Previewable @State var activities = [Activity]()
-    let nilid : UUID? = nil
-    
+    let addOrEditActivity : (_ activity : Activity) -> Void = { activity in
+        print("saved")
+    }
     NavigationStack {
-        AddActivityView(id: nilid, activities: $activities)
+        AddActivityView(
+            addOrEditActivity: addOrEditActivity
+        )
     }
 }
 

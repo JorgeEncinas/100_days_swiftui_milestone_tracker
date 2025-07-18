@@ -10,21 +10,8 @@ import SwiftUI
 struct ContentView: View {
     @State private var showAsGrid = true
     @State private var editMode = false
-    @State private var activities : [Activity] {
-        didSet {
-            DataManager.save(file: "activities.json", contents: activities)
-        }
-    }
+    @StateObject private var activityVM = ActivityViewModel()
     @State private var navigationPathStore = NavPathStore()
-    
-    init() {
-        if let activities = DataManager.load([Activity].self, from: "activities.json") {
-            self.activities = activities
-        } else {
-            self.activities = [Activity]()
-        }
-    }
-    
     let columns = [
         GridItem(.adaptive(minimum:150))
     ]
@@ -34,19 +21,21 @@ struct ContentView: View {
             ScrollView {
                 if(showAsGrid) {
                     LazyVGrid(columns: columns) {
-                        ForEach(activities) { (activity : Activity) in
+                        ForEach(Array(activityVM.activities), id:\.key) { (id: UUID, activity : Activity) in
                             //Since it's `Identifiable` it doesn't need us to specify `id:`
                             ActivityGridView(
-                                activity: activity
+                                activity: activity,
+                                isPreview: false
                             )
                         }
                     }
                     .padding(.horizontal, 10)
                 } else {
                     LazyVStack {
-                        ForEach(activities) { (activity : Activity) in
+                        ForEach(Array(activityVM.activities), id:\.key) { (id: UUID, activity : Activity) in
                             ActivityListView(
-                                activity: activity
+                                activity: activity,
+                                isPreview: false
                             )
                         }
                     }
@@ -82,20 +71,21 @@ struct ContentView: View {
                 //    }
                 //}
             }
-            .navigationDestination(for: UUID.self) { id in
+            .navigationDestination(for: Activity.self) { activity in
                 AddActivityView(
-                    id: id,
-                    activities: $activities
+                    activity: activity,
+                    addOrEditActivity: activityVM.addOrEditActivity
                 )
             }
             .navigationDestination(for: String.self) { route in
                 if route == "addActivity" {
                     AddActivityView(
-                        activities: $activities
+                        addOrEditActivity: activityVM.addOrEditActivity
                     )
                 }
             }
         }
+        .environmentObject(activityVM)
     }
 }
 

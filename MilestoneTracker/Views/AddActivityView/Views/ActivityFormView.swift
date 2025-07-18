@@ -13,6 +13,7 @@ struct ActivityFormView : View {
     @Binding var amountDone : Int
     @Binding var chosenColor : Color
     @Binding var lightText : Bool
+    @Binding var baseIncrement : Int
     let unitOptions = ["mins", "hrs", "times", "days"]
     
                  
@@ -46,14 +47,10 @@ struct ActivityFormView : View {
                     }
                 }
                 HStack {
-                    Text("Amount to start at:")
+                    Text("Increment per tap:")
                         .labelColorDarkBlue()
-                    TextField("Amount done so far", value: $amountDone, format: .number)
+                    TextField("Increment per tap:", value: $baseIncrement, format: .number)
                         .keyboardType(.numberPad)
-                        //.overlay(
-                        //    RoundedRectangle(cornerRadius: 8)
-                        //        .stroke(Color.blue, lineWidth: 2)
-                        //)
                         .multilineTextAlignment(.trailing)
                 }
                 Picker(selection: $unit) {
@@ -63,6 +60,17 @@ struct ActivityFormView : View {
                 } label: {
                     Text("Unit:")
                         .labelColorDarkBlue()
+                }
+                HStack {
+                    Text("Amount to start at:")
+                        .labelColorDarkBlue()
+                    TextField("Amount done so far", value: $amountDone, format: .number)
+                        .keyboardType(.numberPad)
+                        //.overlay(
+                        //    RoundedRectangle(cornerRadius: 8)
+                        //        .stroke(Color.blue, lineWidth: 2)
+                        //)
+                        .multilineTextAlignment(.trailing)
                 }
             }
             Section("Display") {
@@ -89,12 +97,14 @@ struct ActivityFormView : View {
     @Previewable @State var amountDone = 0
     @Previewable @State var chosenColor = Color.purple
     @Previewable @State var lightText = true
+    @Previewable @State var baseIncrement : Int = 1
     ActivityFormView(
         name: $name,
         description: $description,
         unit: $unit,
         amountDone: $amountDone,
         chosenColor: $chosenColor,
-        lightText: $lightText
+        lightText: $lightText,
+        baseIncrement: $baseIncrement
     )
 }

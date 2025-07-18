@@ -7,14 +7,23 @@
 import SwiftUI
 
 struct CounterButtonView : View {
-    let buttonAppleName : String
+    let id : UUID
     let lightText : Bool
+    let increment : Bool
+    let preview : Bool
+    @EnvironmentObject var activityVM : ActivityViewModel
     
     var body : some View {
         Button {
+            if !preview {
+                activityVM.incrementCount(
+                    id: id,
+                    increment: increment
+                )
+            }
             
         } label: {
-            Image(systemName: buttonAppleName)
+            Image(systemName: increment ? "plus.circle" : "minus.circle")
                 .resizable()
                 .scaledToFit()
                 .opacity(0.8)
@@ -30,6 +39,11 @@ struct CounterButtonView : View {
 }
 
 #Preview {
-    CounterButtonView(buttonAppleName: "minus.circle", lightText: true)
+    CounterButtonView(
+        id: UUID(),
+        lightText: true,
+        increment: false,
+        preview: true
+    )
         .preferredColorScheme(.dark)
 }
